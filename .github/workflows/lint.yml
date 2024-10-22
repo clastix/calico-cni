@@ -1,11 +1,13 @@
-name: Release
+name: Lint
 
 on:
   push:
-    tags: [ "v*" ]
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
 
 jobs:
-  release:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -16,18 +18,9 @@ jobs:
         with:
           version: v3.3.4
 
-      - name: Package Helm chart
-        run: helm package ./charts
+      - name: Update Helm repositories
+        run: helm repo update
 
-      - name: Publish Helm chart
-        uses: stefanprodan/helm-gh-pages@master
-        with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          charts_dir: charts/calico-cni
-          charts_url: https://clastix.github.io/charts
-          owner: clastix
-          repository: charts
-          branch: gh-pages
-          target_dir: .
-          commit_username: bsctl
-          commit_email: bsctl@clastix.io
+      - name: Linting Chart
+        run: helm lint ./charts/calico-cni
+        
