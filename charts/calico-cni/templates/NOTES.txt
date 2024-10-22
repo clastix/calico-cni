@@ -1,0 +1,13 @@
+1. Check the status of the calico-node DaemonSet:
+
+   kubectl get daemonset -n {{ .Release.Namespace }} {{ include "calico.fullname" . }}-node
+
+2. Check the status of the calico-kube-controllers Deployment:
+
+   kubectl get deployment -n {{ .Release.Namespace }} {{ include "calico.fullname" . }}-kube-controllers
+
+3. Environment variables used in the calico-node:
+
+{{- range $key, $value := .Values.node.env }}
+   - {{ $key }}: {{ $value }}
+{{- end }}

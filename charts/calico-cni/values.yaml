@@ -1,0 +1,89 @@
+# Default values for calico-cni.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+node:
+  image:
+    repository: calico/node
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: calico-node
+  priorityClassName: system-node-critical
+  nodeSelector:
+    kubernetes.io/os: linux
+  hostNetwork: true
+  tolerations:
+    # Make sure calico-node gets scheduled on all nodes.
+    - effect: NoSchedule
+      operator: Exists
+    # Mark the pod as a critical add-on for rescheduling.
+    - key: CriticalAddonsOnly
+      operator: Exists
+    - effect: NoExecute
+      operator: Exists
+  env: # Reference: https://docs.tigera.io/calico/latest/reference/configure-calico-node
+    # Use Kubernetes API as the backing datastore.
+    DATASTORE_TYPE: "kubernetes"
+    # Wait for the datastore to become available before starting.
+    WAIT_FOR_DATASTORE: "true"
+    # Cluster type to identify the deployment type
+    CLUSTER_TYPE: "k8s"
+    # Auto-detect the BGP IP address.
+    IP: "autodetect"
+    # IP autodetection modes:
+    # - first-found (default): the first valid IP address on the first interface, excluding local interfaces
+    # - kubernetes-internal-ip: the address assigned to Kubernetes node
+    # - can-reach: the address used to reach a particular IP or domain, e.g. can-reach="8.8.8.8/32","google.com"
+    # - interface: regex to include a matching interface
+    # - skip-interface: regex to exclude a matching interfaces
+    # - cidrs: ranges in CIDR format to determine valid IP addresses
+    #IP_AUTODETECTION_METHOD: "first-found"
+    #IP6_AUTODETECTION_METHOD: "first-found"
+    # The default IPv4 pool to create on startup if none exists. Pod IPs will be
+    # chosen from this range. Changing this value after installation will have no effect.
+    # This should fall within `--cluster-cidr`.
+    #CALICO_IPV4POOL_CIDR: "10.36.0.0/16"
+    # Enable or Disable IPIP Overlay
+    CALICO_IPV4POOL_IPIP: "Never"
+    # Enable or Disable VXLAN on the default IP pool.
+    CALICO_IPV4POOL_VXLAN: "Never"
+    # Enable or Disable VXLAN on the default IPv6 IP pool.
+    CALICO_IPV6POOL_VXLAN: "Never"
+    # Disable file logging so `kubectl logs` works.
+    CALICO_DISABLE_FILE_LOGGING: "true"
+    # Set Felix endpoint to host default action to ACCEPT.
+    FELIX_DEFAULTENDPOINTTOHOSTACTION: "ACCEPT"
+    # Disable IPv6 on Kubernetes.
+    FELIX_IPV6SUPPORT: "false"
+    FELIX_HEALTHENABLED: "true"
+
+controllers:
+  image:
+    repository: calico/kube-controllers
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: calico-kube-controllers
+  priorityClassName: system-cluster-critical
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations:
+    # Mark the pod as a critical add-on for rescheduling.
+    - key: CriticalAddonsOnly
+      operator: Exists
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+

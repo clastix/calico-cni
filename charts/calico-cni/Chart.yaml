@@ -1,0 +1,16 @@
+apiVersion: v2
+name: calico-cni
+description: |
+  This Helm chart has been created based on the reference minimalistic Calico deployment. 
+  We do not use the Helm Chart Calico Operator provided by Tigera. This chart is based on a lightweigth Calico's configuration 
+  manifest and it should work in most of the cases.
+  
+  This chart is maintained by [Clastix Labs](https://github.com/clastix).
+type: application
+version: 3.28.1
+appVersion: v3.28.1
+home: https://github.com/clastix/calico-cni-minimal
+sources: ["https://github.com/clastix/calico-cni-minimal"]
+maintainers:
+- name: Clastix Labs
+  email: labs@clastix.io
