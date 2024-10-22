@@ -18,9 +18,5 @@ jobs:
         with:
           version: v3.3.4
 
-      - name: Update Helm repositories
-        run: helm repo update
-
       - name: Linting Chart
         run: helm lint ./charts/calico-cni
-        
