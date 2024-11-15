@@ -26,14 +26,14 @@ This chart is maintained by [Clastix Labs](https://github.com/clastix).
 ```command
 helm repo add clastix https://clastix.github.io/charts
 helm repo update
-helm install calico clastix/calico-cni-minimal -n kube-system
+helm install calico clastix/calico-cni -n kube-system
 ```
 
 # Upgrading
 
 ```command
 helm repo update
-helm upgrade calico clastix/calico-cni-minimal -n kube-system --version <new_version>
+helm upgrade calico clastix/calico-cni -n kube-system --version <new_version>
 ```
 
 ## Customize the installation
